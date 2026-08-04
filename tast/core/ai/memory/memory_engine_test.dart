@@ -38,7 +38,7 @@ void main() {
       final mem = await engine.remember(content: 'access test');
       final beforeCount = mem.accessCount;
       final beforeAccess = mem.lastAccess;
-      await Future.delayed(Duration(milliseconds: 15));
+      await Future.delayed(const Duration(milliseconds: 15));
       await engine.getById(mem.id);
       final after = await engine.getById(mem.id);
       expect(after!.accessCount, greaterThan(beforeCount));
