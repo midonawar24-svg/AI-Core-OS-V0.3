@@ -1,32 +1,44 @@
-name: AI Core OS - Build
+name: AI Core OS CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  build:
+  test-and-analyze:
     runs-on: ubuntu-latest
-
+    
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0'
           channel: 'stable'
-      
-      - name: Get dependencies
+          cache: true
+
+      - name: Install dependencies
         run: flutter pub get
-      
+
+      - name: Verify Contracts - Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Check for uncommitted generated files
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "Generated files are not committed!"
+            git diff
+            exit 1
+          fi
+
       - name: Analyze
-        run: flutter analyze
-      
-      - name: Run tests
-        run: flutter test || echo "No tests yet - skip"
-      
-      - name: Build APK Debug
-        run: flutter build apk --debug --target=lib/main_v02.dart
+        run: flutter analyze --fatal-infos
+
+      - name: Unit Tests - InMemory Implementations
+        run: flutter test --coverage
+
+      # ده اللي هنضيفه بعد ما نكتب الاختبارات اللي اتفقنا عليها
+      # - name: Integration Tests - Kernel + Pipeline + Prompt
+      #   run: flutter test integration_test/
