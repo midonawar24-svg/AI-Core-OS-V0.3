@@ -1,5 +1,5 @@
 name: ai_core_os
-description: AI Core OS v4 - Full Integrated OS
+description: AI Core OS v4 - v1.1 Stable
 version: 4.0.0
 publish_to: 'none'
 
@@ -24,3 +24,6 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.4.13
   drift_dev: ^2.28.0
+
+flutter:
+  uses-material-design: true
