@@ -1,3 +1,8 @@
+name: ai_core_os
+description: AI Core OS v4 - Full Integrated OS
+version: 4.0.0
+publish_to: 'none'
+
 environment:
   sdk: '>=3.5.0 <4.0.0'
 
@@ -22,6 +27,5 @@ dev_dependencies:
   drift_dev: ^2.28.1
 
 dependency_overrides:
-  # بنجبر isar_generator القديم يشتغل مع analyzer الجديد
   analyzer: ^6.8.0
   dart_style: ^3.0.0
