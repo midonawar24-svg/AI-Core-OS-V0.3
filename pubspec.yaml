@@ -1,25 +1,29 @@
 name: ai_core_os
-description: AI Core OS - Framework for on-device AI - First real model run
-publish_to: 'none'
-version: 0.3.0+1
+description: AI Core OS v4 - Full Integrated OS
+version: 4.0.0
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.5.1
-  fllama: ^0.4.0  # For Qwen2.5-0.5B
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  drift: ^2.20.0
+  drift_flutter: ^0.2.0
+  sqlite3_flutter_libs: ^0.5.0
+  get_it: ^8.0.0
+  fllama: ^0.0.1
   path_provider: ^2.1.2
-  isar: ^3.1.0+1  # Prepared for v0.4.0, not used yet in v0.3.0
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  build_runner: ^2.4.3
+  isar_generator: ^3.1.0+1
+  drift_dev: ^2.20.0
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/models/  # Place qwen2.5-0.5b.gguf here
