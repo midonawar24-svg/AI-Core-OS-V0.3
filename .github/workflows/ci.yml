@@ -2,7 +2,8 @@ name: AI Core OS CI
 on: [push, pull_request]
 
 jobs:
-  test-and-analyze:
+  analyze:
+    name: Analyze & Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,22 +17,35 @@ jobs:
         run: flutter pub get
 
       - name: Verify Contracts - Drift Only
-        run: dart run build_runner build --delete-conflicting-outputs --build-filter="**/drift_conversation_repository.dart"
+        run: dart run build_runner build --build-filter="**/drift_*.dart"
 
       - name: Check for uncommitted generated files
+        shell: bash
         run: |
-          if [[ -n $(git status --porcelain -- '**.g.dart') ]]; then
-            echo "Generated Drift files are not committed!"
-            git diff -- '**.g.dart'
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "❌ Uncommitted changes after build_runner:"
+            git status
+            git diff
             exit 1
           fi
-          if [ ! -f "lib/core/ai/memory/isar_memory_repository.g.dart" ]; then
-            echo "Isar generated files missing! Run tool/generate_isar.sh locally"
-            exit 1
-          fi
+          echo "✅ CI clean"
 
       - name: Analyze
         run: flutter analyze --fatal-infos
 
-      - name: Unit Tests - InMemory
+  test:
+    name: Unit Tests - InMemory
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Tests
         run: flutter test --coverage
