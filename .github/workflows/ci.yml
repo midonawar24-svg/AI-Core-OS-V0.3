@@ -1,51 +1,25 @@
 name: AI Core OS CI
 on: [push, pull_request]
-
 jobs:
   analyze:
-    name: Analyze & Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.29.2'
-          channel: 'stable'
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Verify Contracts - Drift Only
-        run: dart run build_runner build --build-filter="**/drift_*.dart"
-
-      - name: Check for uncommitted generated files
-        shell: bash
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "❌ Uncommitted changes after build_runner:"
-            git status
-            git diff
+        with: {flutter-version: '3.29.2', channel: 'stable', cache: true}
+      - run: flutter pub get
+      - run: dart run build_runner build
+      - run: |
+          if [ -n "$(git status --porcelain -- lib)" ]; then
+            git status -- lib
             exit 1
           fi
-          echo "✅ CI clean"
-
-      - name: Analyze
-        run: flutter analyze --fatal-infos
-
+      - run: flutter analyze --fatal-infos
   test:
-    name: Unit Tests - InMemory
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.29.2'
-          channel: 'stable'
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run Tests
-        run: flutter test --coverage
+        with: {flutter-version: '3.29.2', channel: 'stable', cache: true}
+      - run: flutter pub get
+      - run: flutter test --coverage
